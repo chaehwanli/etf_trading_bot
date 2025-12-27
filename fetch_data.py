@@ -18,17 +18,20 @@ def main():
     start_date = data_cfg.get("start_date")
     end_date = data_cfg.get("end_date")
     cache_dir = data_cfg.get("cache_dir", "data")
+    spy_interval = data_cfg.get("spy_interval", "1d")
+    leverage_interval = data_cfg.get("leverage_interval", "5m")
+    inverse_interval = data_cfg.get("inverse_interval", "5m")
     
     loader = DataLoader(start_date, end_date, cache_dir)
     
     print("--- Starting Data Fetch ---")
     
     # SPY Daily
-    loader.fetch_data(tickers['spy'], interval="1d", force_update=True)
+    loader.fetch_data(tickers['spy'], interval=spy_interval, force_update=True)
     
     # ETFs Minute (5m)
-    loader.fetch_data(tickers['leverage'], interval="5m", force_update=True)
-    loader.fetch_data(tickers['inverse'], interval="5m", force_update=True)
+    loader.fetch_data(tickers['leverage'], interval=leverage_interval, force_update=True)
+    loader.fetch_data(tickers['inverse'], interval=inverse_interval, force_update=True)
     
     print("--- Data Fetch Complete ---")
 

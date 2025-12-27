@@ -18,6 +18,9 @@ class Backtester:
         self.start_date = data_cfg.get("start_date")
         self.end_date = data_cfg.get("end_date")
         self.cache_dir = data_cfg.get("cache_dir", "data")
+        self.spy_interval = data_cfg.get("spy_interval", "1d")
+        self.lev_interval = data_cfg.get("leverage_interval", "5m")
+        self.inv_interval = data_cfg.get("inverse_interval", "5m") 
         
         entry_time_str = trading_cfg.get("entry_time", "09:00")
         self.entry_time = pd.Timestamp(entry_time_str).time()
@@ -43,9 +46,9 @@ class Backtester:
     def run(self):
         # 1. Load Data
         print("Loading data...")
-        df_spy = self.loader.fetch_data(self.ticker_spy, "1d")
-        df_lev = self.loader.fetch_data(self.ticker_leverage, "5m")
-        df_inv = self.loader.fetch_data(self.ticker_inverse, "5m")
+        df_spy = self.loader.fetch_data(self.ticker_spy, self.spy_interval)
+        df_lev = self.loader.fetch_data(self.ticker_leverage, self.lev_interval)
+        df_inv = self.loader.fetch_data(self.ticker_inverse, self.inv_interval)
         
         if df_spy.empty or df_lev.empty or df_inv.empty:
             print("Insufficient data.")
