@@ -1,10 +1,13 @@
+system:
+  os: "linux" # options: windows, macos, linux
+
 tickers:
   spy: "SPY"
   leverage: "122630.KS"
   inverse: "252670.KS"
 
 trading:
-  start_money: 10000000
+  start_money: 3000000
   entry_time: "09:00"
   
   leverage:
@@ -14,7 +17,7 @@ trading:
     cooldown_days: 3
     
   inverse:
-    stop_loss_pct: 0.10
+    stop_loss_pct: 0.05
     take_profit_pct: 0.30
     max_hold_days: 2
     cooldown_days: 3

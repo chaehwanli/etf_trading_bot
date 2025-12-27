@@ -39,18 +39,45 @@ You can adjust the following parameters:
 ## Usage
 
 ### 1. Install Dependencies
-```bash
-pip install pandas numpy yfinance pyyaml tabulate
-```
+The bot requires Python 3.9+.
 
-### 2. Fetch Data
+#### Windows
+1. Install Python from [python.org](https://www.python.org/downloads/windows/). Ensure "Add Python to PATH" is checked.
+2. Open PowerShell or Command Prompt.
+3. Install dependencies:
+   ```powershell
+   pip install pandas numpy yfinance pyyaml
+   ```
+   *Note: If you encounter errors installing numpy/pandas, you may need to install [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).*
+
+#### macOS / Linux
+1. Install Python (if not available):
+   - **macOS**: `brew install python`
+   - **Linux**: `sudo apt install python3 python3-pip`
+2. Open Terminal.
+3. Create a virtual environment (recommended):
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+4. Install dependencies:
+   ```bash
+   pip install pandas numpy yfinance pyyaml
+   ```
+
+### 2. Configuration
+Edit `config.yaml`:
+- Set `system.os` to your operating system (`windows`, `macos`, or `linux`).
+- Adjust trading parameters and dates as needed.
+
+### 3. Fetch Data
 Download and cache the data first:
 ```bash
 python fetch_data.py
 ```
-This will created a `data/` directory with CSV files.
+This will create a `data/` directory with CSV files.
 
-### 3. Run Backtest
+### 4. Run Backtest
 Execute the trading simulation:
 ```bash
 python main.py
