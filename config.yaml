@@ -1,0 +1,26 @@
+tickers:
+  spy: "SPY"
+  leverage: "122630.KS"
+  inverse: "252670.KS"
+
+trading:
+  start_money: 10000000
+  entry_time: "09:00"
+  
+  leverage:
+    stop_loss_pct: 0.03
+    take_profit_pct: 0.00
+    max_hold_days: 5
+    cooldown_days: 0
+    
+  inverse:
+    stop_loss_pct: 0.03
+    take_profit_pct: 0.00
+    max_hold_days: 5
+    cooldown_days: 0
+
+data:
+  # Using a recent 60-day window appropriate for 5m data availability
+  start_date: "2025-11-25"
+  end_date: "2025-12-25"
+  cache_dir: "data"

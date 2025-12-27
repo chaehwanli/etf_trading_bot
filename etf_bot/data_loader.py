@@ -1,53 +1,62 @@
 import yfinance as yf
 import pandas as pd
 import os
+import shutil
 
 class DataLoader:
-    def __init__(self, start_date: str, end_date: str):
+    def __init__(self, start_date: str, end_date: str, cache_dir: str = "data"):
         self.start_date = start_date
         self.end_date = end_date
+        self.cache_dir = cache_dir
+        
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
 
-    def fetch_data(self, ticker: str, interval: str = "1d") -> pd.DataFrame:
+    def fetch_data(self, ticker: str, interval: str = "1d", force_update: bool = False) -> pd.DataFrame:
         """
-        Fetch data from yfinance.
+        Fetch data from cache or yfinance.
         """
-        print(f"Fetching {ticker} ({interval}) from {self.start_date} to {self.end_date}...")
+        # File name safely
+        safe_ticker = ticker.replace(".", "_")
+        cache_file = os.path.join(self.cache_dir, f"{safe_ticker}_{interval}_{self.start_date}_{self.end_date}.csv")
+        
+        if not force_update and os.path.exists(cache_file):
+            print(f"Loading {ticker} ({interval}) from cache...")
+            df = pd.read_csv(cache_file, index_col=0, parse_dates=True)
+            # Ensure index is tz-aware if it was saved as such (CSV loses some metadata, but ISO helps)
+            return df
+            
+        print(f"Fetching {ticker} ({interval}) from {self.start_date} to {self.end_date} (Force: {force_update})...")
         try:
+            # Add small buffer to end date because yfinance end is exclusive?
+            # Actually yfinance uses inclusive start, exclusive end.
             df = yf.download(ticker, start=self.start_date, end=self.end_date, interval=interval, progress=False)
+            
             if df.empty:
                 print(f"Warning: No data found for {ticker} with interval {interval}")
                 return df
             
-            # yfinance often works better with auto_adjust=True or actions=True depending on version, 
-            # but standard download returns OHLC.
-            # Handle MultiIndex columns if present (common in recent yfinance)
+            # Cleaning Data
             if isinstance(df.columns, pd.MultiIndex):
-                # If ticker is the second level, drop it
                 if ticker in df.columns.get_level_values(1):
                     df = df.xs(ticker, axis=1, level=1)
-                
-            # If still multi-index, try to just keep the first level if it matches OHLCV
+            
             if isinstance(df.columns, pd.MultiIndex):
                  df.columns = df.columns.get_level_values(0)
 
             df.columns = [c.lower() for c in df.columns]
+            
+            # Save to Cache
+            df.to_csv(cache_file)
+            print(f"Saved {ticker} to {cache_file}")
+            
             return df
         except Exception as e:
             print(f"Error fetching data for {ticker}: {e}")
             return pd.DataFrame()
 
-    def get_spy_data(self) -> pd.DataFrame:
-        # SPY for indicators needs to be Daily usually, but user said "SPY 종가 기준".
-        # Usually indicators are on daily.
-        return self.fetch_data("SPY", "1d")
-
-    def get_etf_data(self, ticker: str) -> pd.DataFrame:
-        # ETF data needs to be Minute ("분봉") for precise entry/exit at specific times like 09:00, 10:00 etc.
-        # Note: yfinance limits 1m data to 7 days, 2m/5m/15m/30m/60m to 60 days.
-        # We will try to fetch 1h (60m) or 5m depending on need?
-        # User asked for minute data. Let's try "1h" for a wider backtest range by default, 
-        # or "5m" if they want strict intraday testing (limited history).
-        # Given "Backtest", usually implies a longer period. 
-        # However, 08:40, 09:30 implies sub-hourly granularity.
-        # We will default to '5m' for now, but be aware of the 60-day limit.
-        return self.fetch_data(ticker, "5m")
+    def clean_cache(self):
+        if os.path.exists(self.cache_dir):
+            shutil.rmtree(self.cache_dir)
+            os.makedirs(self.cache_dir)
+            print("Cache cleared.")
