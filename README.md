@@ -10,10 +10,14 @@ This project is a Python-based backtesting bot for tracking and trading KRX ETFs
 
 ## Project Structure
 - `etf_bot/`: Main package
-  - `data_loader.py`: Data fetching and caching.
-  - `indicators.py`: Technical indicator calculations.
-  - `strategy.py`: Trading logic.
-  - `backtester.py`: Backtesting engine.
+  - `data/`: Data management
+    - `loader.py`: Data fetching and caching.
+  - `strategies/`: Trading strategies
+    - `strategy.py`: Trading logic.
+  - `engine/`: Simulation core
+    - `backtester.py`: Backtesting engine.
+  - `utils/`: Utilities
+    - `indicators.py`: Technical indicator calculations.
 - `fetch_data.py`: Script to download and cache data.
 - `main.py`: Main script to run the simulation.
 - `config.yaml`: Configuration file.

@@ -1,7 +1,7 @@
 import yaml
 import sys
 import os
-from etf_bot.data_loader import DataLoader
+from etf_bot.data.loader import DataLoader
 
 def load_config():
     if not os.path.exists("config.yaml"):

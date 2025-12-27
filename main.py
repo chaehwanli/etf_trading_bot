@@ -2,8 +2,8 @@ import sys
 import yaml
 import os
 import pandas as pd
-from etf_bot.backtester import Backtester
-from etf_bot.strategy import Strategy
+from etf_bot.engine.backtester import Backtester
+from etf_bot.strategies.strategy import Strategy
 
 def load_config():
     if not os.path.exists("config.yaml"):

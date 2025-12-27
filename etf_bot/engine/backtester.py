@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 from datetime import timedelta, time
-from .strategy import Strategy, SignalType
-from .data_loader import DataLoader
-from .indicators import Indicators
+from ..strategies.strategy import Strategy, SignalType
+from ..data.loader import DataLoader
+from ..utils.indicators import Indicators
 
 class Backtester:
     def __init__(self, config: dict, strategy: Strategy):
